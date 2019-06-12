@@ -17,29 +17,46 @@ function getMoviesById(id) {
 }
 
 function postAjax(url, data, success) {
-    var params = typeof data == 'string' ? data : Object.keys(data).map(
-            function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
-        ).join('&');
+	var params = typeof data == 'string' ? data : Object.keys(data).map(
+		function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+	).join('&');
 
-    var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-    xhr.open('POST', url);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText); }
-    };
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send(params);
-    return xhr;
+	var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+	xhr.open('POST', url);
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState > 3 && xhr.status == 200) {
+			success(xhr.responseText);
+			getFavourites();
+		}
+	};
+	xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.send(params);
+	return xhr;
 }
 
+function loadFavorites() {
+	var data = JSON.parse(this.responseText);
+	console.log("loadFavorites " + JSON.stringify(data.id));
+	$('<div id ="MS1_' + data.id + '" class="card item" ><img src="' + data.image + '"alt="don"><div class="card-body"><a href="#" class="btn btn-primary" style="width:100%;" onclick="test(' + data.id + ')">Add to favorite</a></div><div class="carousel-caption"></div></div>').appendTo('.carousel-inner1');
+	$('<li data-target="#carousel-example-generic1" data-slide-to="' + i + '"></li>').appendTo('.carousel-indicators1')
+	$('.item').first().addClass('active');
+	$('.carousel-indicators1 > li').first().addClass('active');
+	$('#carousel-example-generic1').carousel();
+}
 
 function getFavourites() {
-
+	console.log("getFavourites");
+	var request = new XMLHttpRequest();
+	request.onload = loadFavorites;
+	request.onerror = requestError;
+	request.open('get', 'favourites', true);
+	request.send();
 }
 
 function addFavourite(data) {
-	console.log("addFavourite "+data.image)
-	postAjax("favourites",data,true);
+	console.log("addFavourite " + data.image)
+	postAjax("favourites", data, true);
 }
 
 function requestListener1() {
@@ -70,6 +87,7 @@ function requestError(error) {
 $(document).ready(function () {
 	console.log("ready");
 	getMovies();
+	
 });
 
 function test(id) {
