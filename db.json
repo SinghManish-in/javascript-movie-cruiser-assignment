@@ -1,9 +1,21 @@
 {
   "movies": [
-  {"id":1,
-  "name":"MS"
-  }
+    {
+      "id": 1,
+      "name": "don",
+      "image": "images/don.jpg"
+    },
+    {
+      "id": 2,
+      "name": "lagaan",
+      "image": "images/lagaan.jpg"
+    }
   ],
   "favourites": [
+    {
+      "id": "1",
+      "name": "don",
+      "image": "images/don.jpg"
+    }
   ]
 }
