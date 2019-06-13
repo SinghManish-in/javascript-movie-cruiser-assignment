@@ -11,6 +11,7 @@ function getMovies() {
 		}
 	}).then(result => {
 		//Populate into the DOM
+		console.log(JSON.stringify(result));
 		createMovieList(result);
 		return result;
 	}).catch(error => {
@@ -77,13 +78,9 @@ const createMovieList = (movieResponse) => {
 
 const getMovieById = (id) =>{
 	var response = {};
-	console.log("movieItems "+JSON.stringify(movieItems));
-	console.log("favItems "+JSON.stringify(favItems));
-	console.log("getMovieById "+id);
+	
 	movieItems.forEach(element=>{
 		if(element.id == id){
-			console.log("element.id "+element.id);
-			console.log("id "+id);
 			response = element;
 		}
 	});
@@ -91,6 +88,7 @@ const getMovieById = (id) =>{
 }
 
 function addFavourites(id) {
+	console.log("addFavourites "+id);
 	if (!isMoviePresentInFavourites(id)) {
 		console.log("getMovieById(id) "+JSON.stringify(getMovieById(id)));
 		postFavourites(getMovieById(id)).then(result => {
@@ -104,12 +102,14 @@ function addFavourites(id) {
 }
 
 const isMoviePresentInFavourites = (id) => {
+	let isMoviePresent = {};
 	favItems.forEach(element => {
-		if (element.id === id) {
-			return true;
+		if (element.id == id) {
+			isMoviePresent = true;
 		}
 	})
-	return false;
+	console.log("isMoviePresent "+isMoviePresent);
+	return isMoviePresent;
 }
 
 const createFavouriteList = (favouriteResponse) => {
