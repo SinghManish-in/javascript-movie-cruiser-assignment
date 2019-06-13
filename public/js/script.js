@@ -11,7 +11,6 @@ function getMovies() {
 		}
 	}).then(result => {
 		//Populate into the DOM
-		console.log(result);
 		createMovieList(result);
 		return result;
 	}).catch(error => {
