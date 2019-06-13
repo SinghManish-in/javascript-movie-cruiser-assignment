@@ -50,7 +50,7 @@ let postFavourites = function (favItem) {
 	}).then((result) => {
 		if (result.status == 201) {
 			favItems.push(favItem);
-			return Promise.resolve(result.json());
+			return Promise.resolve(result);
 		} else {
 			return Promise.reject("Movie is already added to favourites");
 		}
@@ -65,7 +65,9 @@ function addFavourite(id) {
 		}).catch(error => {
 			console.log("error", error);
 		})
-		return getMovieById(id);
+		let test = favItems;
+		test.push(getMovieById(id));
+		return test;
 	}
 	else{
 		throw new Error("Movie is already added to favourites");
