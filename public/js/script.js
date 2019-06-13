@@ -1,3 +1,7 @@
+
+let movieItems;
+let favItems;
+
 function getMovies() {
 	return fetch("http://localhost:3000/movies").then((result) => {
 		if (result.status == 200) {
@@ -5,12 +9,10 @@ function getMovies() {
 		} else {
 			return Promise.reject(null);
 		}
-	}).then(result =>{
+	}).then(result => {
 		//Populate into the DOM
-		console.log("getMovies "+result);
-		result.forEach(movie => {
-			createCard(movie);
-		})
+		console.log("getMovies " + JSON.stringify(result));
+		createMovieList(result);
 		return result;
 	}).catch(error => {
 		console.log(error);
@@ -18,24 +20,31 @@ function getMovies() {
 	})
 }
 
-
-
-//Get All Movie API
-let getMovieById = function (id) {
-	return fetch(`http://localhost:3000/movies?id=${id}`).then((result) => {
+//Get the Favourites Movie list 
+function getFavourites() {
+	return fetch("http://localhost:3000/favourites").then((result) => {
 		if (result.status == 200) {
 			return Promise.resolve(result.json());
 		} else {
-			return Promise.reject("Error");
+			return Promise.reject(null);
 		}
+	}).then(result => {
+		//Populate into the DOM
+		console.log("getFavourites " + JSON.stringify(result));
+		createFavouriteList(result);
+		return result;
+	}).catch(error => {
+		console.log(error);
+		return error;
 	})
 }
 
 //Post Movie API
-let postMovie = function (myMovie) {
+let postFavourites = function (favItem) {
+	console.log("favItem "+favItem);
 	return fetch("http://localhost:3000/favourites", {
 		method: 'POST',
-		body: JSON.stringify(myMovie),
+		body: JSON.stringify(favItem),
 		headers: {
 			'Content-Type': 'application/json',
 			'Accept': 'application/json'
@@ -50,112 +59,73 @@ let postMovie = function (myMovie) {
 }
 
 
-//Get the Favourites Movie list
-function getFavourites() {
-	//API call
-	return fetch("http://localhost:3000/favourites").then((result) => {
-		if (result.status == 200) {
-			return Promise.resolve(result.json());
-		} else {
-			return Promise.reject("Error");
-		}
-	}).then(result => {
-		//Populate into DOM
-		result.forEach(movie => {
-			createFavouriteMovieCard(movie);
-		})
-		return result;
-	}).catch(error =>{
-		return error
-	})
-
+const createMovieList = (movieResponse) => {
+	movieItems = movieResponse;
+	let domMovieList = '';
+	movieResponse.forEach(element => {
+		domMovieList = domMovieList + `
+		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
+		<h6>${element.title}</h6>
+		<img src="${element.posterPath}" class="img-fluid pb-2" alt="Responsive image">
+		<p>Year: <span id="year">${element.releaseDate}</span></p>
+		<button
+		onclick="addFavourites(${element.id})" type="button" class="btn btn-dark">
+		Add to Favourites
+		</button>
+		</div>
+		`;
+	});
+	document.getElementById("moviesList").innerHTML = domMovieList;
 }
 
-function addFavourite(e) {
-	getMovieById(this.value).then(selectedMovie => {
-		//Push to the Favourites list.
-		postMovie(selectedMovie[0]).then(result => {
+const getMovieById = (id) =>{
+	movieItems.forEach(element=>{
+		if(element.id === id){
+		return element;
+		}
+	});
+	return null;
+}
+
+function addFavourites(id) {
+	console.log("addFavourites " + id);
+	if (!isMoviePresentInFavourites(id)) {
+		postFavourites(getMovieById(id)).then(result => {
 			console.log("updated successfully");
 			let childNode = document.getElementById("favouritesList");
 			childNode.innerHTML = '';
 			getFavourites();
 		}).catch(error => {
-				console.log("error", error);
+			console.log("error", error);
 		})
+	}
+}
+
+const isMoviePresentInFavourites = (id) => {
+	console.log(JSON.stringify("favItems" + favItems));
+	favItems.forEach(element => {
+		if (element.id === id) {
+			return true;
+		}
 	})
+	return false;
 }
 
-function createCard(movie) {
-	//Create card
-	let div0 = document.createElement("div");
-	div0.className = "card w-50 h-25 mb-3";
-	div0.style = "width: 18rem;";
-
-	//Image
-	let img = document.createElement("img");
-	img.className = "card-img-top";
-	img.src =  movie.img;
-	img.alt = "Card image cap";
-
-	//card body
-	let div1 = document.createElement("div");
-	div1.className = "card-body h-10";
-
-	//H5
-	let h5 = document.createElement("h5");
-	h5.className = "card-title";
-	h5.textContent = movie.name;
-
-	//H6
-	let h6 = document.createElement("h6");
-	h6.className = "card-title";
-	h6.textContent = "Rating: " + movie.rating;
-
-	//Button
-	let button = document.createElement("button");
-	button.className = "btn btn-primary";
-	button.textContent = "Add Favourites";
-	button.id = movie.id;
-	button.value = movie.id;
-	button.addEventListener("click", addFavourite)
-	
-	div1.appendChild(h5);
-	div1.appendChild(h6);
-	div1.appendChild(button);
-	div0.appendChild(img);
-	div0.appendChild(div1);
-
-	document.getElementById("moviesList").appendChild(div0);
-
+const createFavouriteList = (favouriteResponse) => {
+	favItems = favouriteResponse;
+	let domFavouriteList = '';
+	favouriteResponse.forEach(element => {
+		domFavouriteList = domFavouriteList + `
+		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
+		<h6>${element.title}</h6>
+		<img src="${element.posterPath}" class="img-fluid pb-2" alt="Responsive image">
+		<p>Year: <span id="year">${element.releaseDate}</span></p>
+		</div>
+		`;
+	});
+	document.getElementById("favouritesList").innerHTML = domFavouriteList;
 }
 
-function createFavouriteMovieCard(movie) {
-	//Create card
-	let div0 = document.createElement("div");
-	div0.className = "card w-50 mb-3";
-	div0.style = "width: 18rem;";
-
-	//Image
-	let img = document.createElement("img");
-	img.className = "card-img-top";
-	img.src = movie.posterPath;
-	img.alt = "Card image cap";
-
-	//card body
-	let div1 = document.createElement("div");
-	div1.className = "card-body";
-
-	//H5
-	let h5 = document.createElement("h5");
-	h5.className = "card-title";
-	h5.textContent = movie.name;
-
-	div1.appendChild(h5);
-	div0.appendChild(img);
-	div0.appendChild(div1);
-
-	document.getElementById("favouritesList").appendChild(div0);
-}
 
 // module.exports = {
 // 	getMovies,

@@ -2,30 +2,30 @@
   "movies": [
     {
       "id": "1",
-      "name": "Don",
-      "rating": "3.5",
-      "img": "images/don.jpg"
+      "title": "Don",
+      "releaseDate": "1975",
+      "posterPath": "images/don.jpg"
     },
     {
       "id": "2",
-      "name": "Lagaan",
-      "rating": "5",
-      "img": "images/lagaan.jpg"
+      "title": "Lagaan",
+      "releaseDate": "2004",
+      "posterPath": "images/lagaan.jpg"
     },
     {
       "id": "3",
-      "name": "Raw Deal",
-      "rating": "5",
-      "img": "images/rawDeal.jpg"
+      "title": "Raw Deal",
+      "releaseDate": "1983",
+      "posterPath": "images/rawDeal.jpg"
     },
     {
       "id": "4",
-      "name": "Sholay",
-      "rating": "5",
-      "img": "images/sholay.jpg"
+      "title": "Sholay",
+      "releaseDate": "1975",
+      "posterPath": "images/sholay.jpg"
     }
   ],
   "favourites": [
-   
+    
   ]
 }
