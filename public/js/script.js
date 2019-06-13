@@ -59,15 +59,16 @@ let postFavourites = function (favItem) {
 
 function addFavourite(id) {
 	if (!isMoviePresentInFavourites(id)) {
-		return postFavourites(getMovieById(id)).then(result => {
+		postFavourites(getMovieById(id)).then(result => {
 			document.getElementById("favouritesList").innerHTML = '';
 			createFavouriteList();
 		}).catch(error => {
 			console.log("error", error);
 		})
+		return getMovieById(id);
 	}
 	else{
-		return Promise.reject("Movie is already added to favourites");
+		throw new Error("Movie is already added to favourites");
 	}
 }
 

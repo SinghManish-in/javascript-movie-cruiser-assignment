@@ -195,9 +195,9 @@ describe('Movie Cruiser', () => {
 				expect(lastCallArgs[1].method).to.equal('POST');
 				expect(lastCallArgs[1].body).to.equal(JSON.stringify(moviesTestData[0]));
 				favouritesTestData.push(moviesTestData[0]);
-				//expect(res).to.deep.equal(favouritesTestData);
+				expect(res).to.deep.equal(favouritesTestData);
 				expect(document.getElementById('favouritesList').innerHTML)
-				.to.include('2017-03-07');
+				.to.include('The Unique Lama');
 				done();
 			})
 			.catch((err) => {
@@ -263,7 +263,7 @@ describe('Movie Cruiser', () => {
 		})
 		.catch((err) => {
 			expect(err).to.not.equal(null, err);
-			//expect(err.message).to.equal('Movie is already added to favourites');
+			expect(err.message).to.equal('Movie is already added to favourites');
 			done();
 		});
 	});
