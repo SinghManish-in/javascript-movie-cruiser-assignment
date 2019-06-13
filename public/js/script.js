@@ -52,7 +52,7 @@ let postFavourites = function (favItem) {
 			favItems.push(favItem);
 			return Promise.resolve(result.json());
 		} else {
-			return Promise.reject("Duplicate data");
+			return Promise.reject("Movie is already added to favourites");
 		}
 	})
 }
@@ -65,6 +65,9 @@ function addFavourite(id) {
 		}).catch(error => {
 			console.log("error", error);
 		})
+	}
+	else{
+		return Promise.reject("Movie is already added to favourites");
 	}
 }
 
