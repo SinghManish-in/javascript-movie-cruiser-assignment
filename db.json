@@ -37,6 +37,12 @@
       "title": "Lagaan",
       "releaseDate": "2004",
       "posterPath": "images/lagaan.jpg"
+    },
+    {
+      "id": "3",
+      "title": "Raw Deal",
+      "releaseDate": "1983",
+      "posterPath": "images/rawDeal.jpg"
     }
   ]
 }

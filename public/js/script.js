@@ -65,19 +65,16 @@ function addFavourite(id) {
 		}).catch(error => {
 			console.log("error", error);
 		})
-		let test = favItems;
-		test.push(getMovieById(id));
-		return test;
 	}
-	else{
+	else {
 		throw new Error("Movie is already added to favourites");
 	}
 }
 
-const getMovieById = (id) =>{
+const getMovieById = (id) => {
 	var response = {};
-	movieItems.forEach(element=>{
-		if(element.id == id){
+	movieItems.forEach(element => {
+		if (element.id == id) {
 			response = element;
 		}
 	});
