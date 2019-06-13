@@ -57,6 +57,38 @@ let postFavourites = function (favItem) {
 	})
 }
 
+function addFavourite(id) {
+	if (!isMoviePresentInFavourites(id)) {
+		return postFavourites(getMovieById(id)).then(result => {
+			document.getElementById("favouritesList").innerHTML = '';
+			createFavouriteList();
+		}).catch(error => {
+			console.log("error", error);
+		})
+	}
+}
+
+const getMovieById = (id) =>{
+	var response = {};
+	movieItems.forEach(element=>{
+		if(element.id == id){
+			response = element;
+		}
+	});
+	return response;
+}
+
+
+
+const isMoviePresentInFavourites = (id) => {
+	let isMoviePresent = false;
+	favItems.forEach(element => {
+		if (element.id == id) {
+			isMoviePresent = true;
+		}
+	})
+	return isMoviePresent;
+}
 
 const createMovieList = (movieResponse) => {
 	movieItems = movieResponse;
@@ -75,39 +107,6 @@ const createMovieList = (movieResponse) => {
 		`;
 	});
 	document.getElementById("moviesList").innerHTML = domMovieList;
-}
-
-const getMovieById = (id) =>{
-	var response = {};
-	
-	movieItems.forEach(element=>{
-		if(element.id == id){
-			response = element;
-		}
-	});
-	return response;
-}
-
-function addFavourite(id) {
-	if (!isMoviePresentInFavourites(id)) {
-		postFavourites(getMovieById(id)).then(result => {
-			let childNode = document.getElementById("favouritesList");
-			childNode.innerHTML = '';
-			createFavouriteList();
-		}).catch(error => {
-			console.log("error", error);
-		})
-	}
-}
-
-const isMoviePresentInFavourites = (id) => {
-	let isMoviePresent = false;
-	favItems.forEach(element => {
-		if (element.id == id) {
-			isMoviePresent = true;
-		}
-	})
-	return isMoviePresent;
 }
 
 const createFavouriteList = () => {
