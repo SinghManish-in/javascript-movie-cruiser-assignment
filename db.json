@@ -26,6 +26,17 @@
     }
   ],
   "favourites": [
-    
+    {
+      "id": "1",
+      "title": "Don",
+      "releaseDate": "1975",
+      "posterPath": "images/don.jpg"
+    },
+    {
+      "id": "2",
+      "title": "Lagaan",
+      "releaseDate": "2004",
+      "posterPath": "images/lagaan.jpg"
+    }
   ]
 }
