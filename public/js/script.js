@@ -49,6 +49,7 @@ let postFavourites = function (favItem) {
 		}
 	}).then((result) => {
 		if (result.status == 201) {
+			favItems.push(favItem);
 			return Promise.resolve(result.json());
 		} else {
 			return Promise.reject("Duplicate data");
@@ -67,7 +68,7 @@ const createMovieList = (movieResponse) => {
 		<img src="${element.posterPath}" class="img-fluid pb-2" alt="Responsive image">
 		<p>Year: <span id="year">${element.releaseDate}</span></p>
 		<button
-		onclick="addFavourites(${element.id})" type="button" class="btn btn-dark">
+		onclick="addFavourite(${element.id})" type="button" class="btn btn-dark">
 		Add to Favourites
 		</button>
 		</div>
@@ -87,10 +88,8 @@ const getMovieById = (id) =>{
 	return response;
 }
 
-function addFavourites(id) {
-	console.log("addFavourites "+id);
+function addFavourite(id) {
 	if (!isMoviePresentInFavourites(id)) {
-		console.log("getMovieById(id) "+getMovieById(id));
 		postFavourites(getMovieById(id)).then(result => {
 			let childNode = document.getElementById("favouritesList");
 			childNode.innerHTML = '';
@@ -108,7 +107,6 @@ const isMoviePresentInFavourites = (id) => {
 			isMoviePresent = true;
 		}
 	})
-	console.log("isMoviePresent "+isMoviePresent);
 	return isMoviePresent;
 }
 
@@ -128,15 +126,10 @@ const createFavouriteList = (favouriteResponse) => {
 }
 
 
-// module.exports = {
-// 	getMovies,
-// 	getFavourites,
-// 	addFavourite
-// };
-
-// You will get error - Uncaught ReferenceError: module is not defined
-// while running this script on browser which you shall ignore
-// as this is required for testing purposes and shall not hinder
-// it's normal execution
+module.exports = {
+	getMovies,
+	getFavourites,
+	addFavourite
+};
 
 
