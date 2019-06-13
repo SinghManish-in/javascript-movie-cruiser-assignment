@@ -1,101 +1,172 @@
 function getMovies() {
-	console.log("getMovies");
-	var request = new XMLHttpRequest();
-	request.onload = requestListener;
-	request.onerror = requestError;
-	request.open('get', 'movies', true);
-	request.send();
+	getAllMovies().then(result => {
+		result.forEach(movie => {
+			createCard(movie);
+		})
+
+	})
 }
 
-function getMoviesById(id) {
-	var url = "movies/" + id;
-	var request = new XMLHttpRequest();
-	request.onload = requestListener1;
-	request.onerror = requestError;
-	request.open('get', url, true);
-	request.send();
-}
-
-function postAjax(url, data, success) {
-	var params = typeof data == 'string' ? data : Object.keys(data).map(
-		function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
-	).join('&');
-
-	var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-	xhr.open('POST', url);
-	xhr.onreadystatechange = function () {
-		if (xhr.readyState > 3 && xhr.status == 200) {
-			success(xhr.responseText);
-			getFavourites();
+//Get All Movie API
+let getAllMovies = function () {
+	return fetch("http://localhost:3000/movies").then((result) => {
+		if (result.status == 200) {
+			return Promise.resolve(result.json());
+		} else {
+			return Promise.reject("Error");
 		}
-	};
-	xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.send(params);
-	return xhr;
+	})
 }
 
-function loadFavorites() {
-	var data = JSON.parse(this.responseText);
-	console.log("loadFavorites " + JSON.stringify(data.id));
-	$('<div id ="MS1_' + data.id + '" class="card item" ><img src="' + data.image + '"alt="don"><div class="card-body"><a href="#" class="btn btn-primary" style="width:100%;" onclick="test(' + data.id + ')">Add to favorite</a></div><div class="carousel-caption"></div></div>').appendTo('.carousel-inner1');
-	$('<li data-target="#carousel-example-generic1" data-slide-to="' + i + '"></li>').appendTo('.carousel-indicators1')
-	$('.item').first().addClass('active');
-	$('.carousel-indicators1 > li').first().addClass('active');
-	$('#carousel-example-generic1').carousel();
+//Get All Movie API
+let getMovieById = function (id) {
+	return fetch(`http://localhost:3000/movies?id=${id}`).then((result) => {
+		if (result.status == 200) {
+			return Promise.resolve(result.json());
+		} else {
+			return Promise.reject("Error");
+		}
+	})
 }
 
+//Post Movie API
+let postMovie = function (myMovie) {
+	return fetch("http://localhost:3000/favourites", {
+		method: 'POST',
+		body: JSON.stringify(myMovie),
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
+		}
+	}).then((result) => {
+		if (result.status == 201) {
+			return Promise.resolve(result.json());
+		} else {
+			return Promise.reject("Duplicate data");
+		}
+	})
+}
+
+//Get Favourites Movie API
+let getFavouriteMovies = function () {
+	return fetch("http://localhost:3000/favourites").then((result) => {
+		if (result.status == 200) {
+			return Promise.resolve(result.json());
+		} else {
+			return Promise.reject("Error");
+		}
+	})
+}
+
+//Get the Favourites Movie list
 function getFavourites() {
-	console.log("getFavourites");
-	var request = new XMLHttpRequest();
-	request.onload = loadFavorites;
-	request.onerror = requestError;
-	request.open('get', 'favourites', true);
-	request.send();
+	//Get favourites Movie	
+	getFavouriteMovies().then(result => {
+		result.forEach(movie => {
+			createFavouriteMovieCard(movie);
+		})
+	})
 }
 
-function addFavourite(data) {
-	console.log("addFavourite " + data.image)
-	postAjax("favourites", data, true);
+function addFavourite() {
+	getFavouriteMovies().then(result => {
+		result.forEach(movie => {
+			createCard(movie);
+		})
+	})
 }
 
-function requestListener1() {
-	var data = JSON.parse(this.responseText);
-	console.log(data);
-	addFavourite(data);
+function createCard(movie) {
+	//Create card
+	let div0 = document.createElement("div");
+	div0.className = "card w-50 h-25 mb-3";
+	div0.style = "width: 18rem;";
+
+	//Image
+	let img = document.createElement("img");
+	img.className = "card-img-top";
+	img.src =  movie.img;
+	img.alt = "Card image cap";
+
+	//card body
+	let div1 = document.createElement("div");
+	div1.className = "card-body h-10";
+
+	//H5
+	let h5 = document.createElement("h5");
+	h5.className = "card-title";
+	h5.textContent = movie.name;
+
+	//H6
+	let h6 = document.createElement("h6");
+	h6.className = "card-title";
+	h6.textContent = "Rating: " + movie.rating;
+
+	//Button
+	let button = document.createElement("button");
+	button.className = "btn btn-primary";
+	button.textContent = "Add Favourites";
+	button.id = movie.id;
+	button.value = movie.id;
+	button.addEventListener("click", selectedFavMovieHandler)
+	button.a
+
+	div1.appendChild(h5);
+	div1.appendChild(h6);
+	div1.appendChild(button);
+	div0.appendChild(img);
+	div0.appendChild(div1);
+
+	document.getElementById("moviesList").appendChild(div0);
 }
 
-function requestListener() {
-	var data = JSON.parse(this.responseText);
-	console.log("data " + JSON.stringify(data[0].id));
-	for (var i = 0; i < data.length; i++) {
-		$('<div id ="MS_' + data[i].id + '" class="card item" ><img src="' + data[i].image + '"alt="don"><div class="card-body"><a href="#" class="btn btn-primary" style="width:100%;" onclick="test(' + data[i].id + ')">Add to favorite</a></div><div class="carousel-caption"></div></div>').appendTo('.carousel-inner');
-		$('<li data-target="#carousel-example-generic" data-slide-to="' + i + '"></li>').appendTo('.carousel-indicators')
+function selectedFavMovieHandler(e) {
+	selectedMovieDetail(this.value);
 
-	}
-	$('.item').first().addClass('active');
-	$('.carousel-indicators > li').first().addClass('active');
-	$('#carousel-example-generic').carousel();
 
-	console.log(data);
 }
 
-function requestError(error) {
-	console.log('We have an issue', error);
+function selectedMovieDetail(id) {
+	getMovieById(id).then(selectedMovie => {
+		//Push to the Favourites list.
+		postMovie(selectedMovie[0]).then(result => {
+			console.log("updated successfully");
+			let childNode = document.getElementById("favouritesList");
+			childNode.innerHTML = '';
+			getFavourites();
+		})
+			.catch(error => {
+				console.log("error", error);
+			})
+	})
 }
+function createFavouriteMovieCard(movie) {
+	//Create card
+	let div0 = document.createElement("div");
+	div0.className = "card w-50 mb-3";
+	div0.style = "width: 18rem;";
 
-$(document).ready(function () {
-	console.log("ready");
-	getMovies();
-	
-});
+	//Image
+	let img = document.createElement("img");
+	img.className = "card-img-top";
+	img.src = movie.img;
+	img.alt = "Card image cap";
 
-function test(id) {
-	console.log("MS  " + id);
-	getMoviesById(id);
+	//card body
+	let div1 = document.createElement("div");
+	div1.className = "card-body";
+
+	//H5
+	let h5 = document.createElement("h5");
+	h5.className = "card-title";
+	h5.textContent = movie.name;
+
+	div1.appendChild(h5);
+	div0.appendChild(img);
+	div0.appendChild(div1);
+
+	document.getElementById("favouritesList").appendChild(div0);
 }
-
-
 
 // module.exports = {
 // 	getMovies,
