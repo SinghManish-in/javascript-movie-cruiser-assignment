@@ -1,21 +1,31 @@
 {
   "movies": [
     {
-      "id": 1,
-      "name": "don",
-      "image": "images/don.jpg"
+      "id": "1",
+      "name": "Don",
+      "rating": "3.5",
+      "img": "images/don.jpg"
     },
     {
-      "id": 2,
-      "name": "lagaan",
-      "image": "images/lagaan.jpg"
+      "id": "2",
+      "name": "Lagaan",
+      "rating": "5",
+      "img": "images/lagaan.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Raw Deal",
+      "rating": "5",
+      "img": "images/rawDeal.jpg"
+    },
+    {
+      "id": "4",
+      "name": "Sholay",
+      "rating": "5",
+      "img": "images/sholay.jpg"
     }
   ],
   "favourites": [
-    {
-      "id": "1",
-      "name": "don",
-      "image": "images/don.jpg"
-    }
+   
   ]
 }

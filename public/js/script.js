@@ -1,22 +1,24 @@
 function getMovies() {
-	getAllMovies().then(result => {
-		result.forEach(movie => {
-			createCard(movie);
-		})
-
-	})
-}
-
-//Get All Movie API
-let getAllMovies = function () {
 	return fetch("http://localhost:3000/movies").then((result) => {
 		if (result.status == 200) {
 			return Promise.resolve(result.json());
 		} else {
-			return Promise.reject("Error");
+			return Promise.reject(null);
 		}
+	}).then(result =>{
+		//Populate into the DOM
+		console.log("getMovies "+result);
+		result.forEach(movie => {
+			createCard(movie);
+		})
+		return result;
+	}).catch(error => {
+		console.log(error);
+		return error;
 	})
 }
+
+
 
 //Get All Movie API
 let getMovieById = function (id) {
@@ -47,31 +49,38 @@ let postMovie = function (myMovie) {
 	})
 }
 
-//Get Favourites Movie API
-let getFavouriteMovies = function () {
+
+//Get the Favourites Movie list
+function getFavourites() {
+	//API call
 	return fetch("http://localhost:3000/favourites").then((result) => {
 		if (result.status == 200) {
 			return Promise.resolve(result.json());
 		} else {
 			return Promise.reject("Error");
 		}
-	})
-}
-
-//Get the Favourites Movie list
-function getFavourites() {
-	//Get favourites Movie	
-	getFavouriteMovies().then(result => {
+	}).then(result => {
+		//Populate into DOM
 		result.forEach(movie => {
 			createFavouriteMovieCard(movie);
 		})
+		return result;
+	}).catch(error =>{
+		return error
 	})
+
 }
 
-function addFavourite() {
-	getFavouriteMovies().then(result => {
-		result.forEach(movie => {
-			createCard(movie);
+function addFavourite(e) {
+	getMovieById(this.value).then(selectedMovie => {
+		//Push to the Favourites list.
+		postMovie(selectedMovie[0]).then(result => {
+			console.log("updated successfully");
+			let childNode = document.getElementById("favouritesList");
+			childNode.innerHTML = '';
+			getFavourites();
+		}).catch(error => {
+				console.log("error", error);
 		})
 	})
 }
@@ -108,9 +117,8 @@ function createCard(movie) {
 	button.textContent = "Add Favourites";
 	button.id = movie.id;
 	button.value = movie.id;
-	button.addEventListener("click", selectedFavMovieHandler)
-	button.a
-
+	button.addEventListener("click", addFavourite)
+	
 	div1.appendChild(h5);
 	div1.appendChild(h6);
 	div1.appendChild(button);
@@ -118,28 +126,9 @@ function createCard(movie) {
 	div0.appendChild(div1);
 
 	document.getElementById("moviesList").appendChild(div0);
-}
-
-function selectedFavMovieHandler(e) {
-	selectedMovieDetail(this.value);
-
 
 }
 
-function selectedMovieDetail(id) {
-	getMovieById(id).then(selectedMovie => {
-		//Push to the Favourites list.
-		postMovie(selectedMovie[0]).then(result => {
-			console.log("updated successfully");
-			let childNode = document.getElementById("favouritesList");
-			childNode.innerHTML = '';
-			getFavourites();
-		})
-			.catch(error => {
-				console.log("error", error);
-			})
-	})
-}
 function createFavouriteMovieCard(movie) {
 	//Create card
 	let div0 = document.createElement("div");
@@ -149,7 +138,7 @@ function createFavouriteMovieCard(movie) {
 	//Image
 	let img = document.createElement("img");
 	img.className = "card-img-top";
-	img.src = movie.img;
+	img.src = movie.posterPath;
 	img.alt = "Card image cap";
 
 	//card body
