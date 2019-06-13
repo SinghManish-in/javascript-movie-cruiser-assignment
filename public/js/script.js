@@ -29,8 +29,9 @@ function getFavourites() {
 			return Promise.reject(null);
 		}
 	}).then(result => {
+		favItems = result;
 		//Populate into the DOM
-		createFavouriteList(result);
+		createFavouriteList();
 		return result;
 	}).catch(error => {
 		console.log(error);
@@ -93,7 +94,7 @@ function addFavourite(id) {
 		postFavourites(getMovieById(id)).then(result => {
 			let childNode = document.getElementById("favouritesList");
 			childNode.innerHTML = '';
-			getFavourites();
+			createFavouriteList();
 		}).catch(error => {
 			console.log("error", error);
 		})
@@ -110,10 +111,9 @@ const isMoviePresentInFavourites = (id) => {
 	return isMoviePresent;
 }
 
-const createFavouriteList = (favouriteResponse) => {
-	favItems = favouriteResponse;
+const createFavouriteList = () => {
 	let domFavouriteList = '';
-	favouriteResponse.forEach(element => {
+	favItems.forEach(element => {
 		domFavouriteList = domFavouriteList + `
 		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
 		<h6>${element.title}</h6>
