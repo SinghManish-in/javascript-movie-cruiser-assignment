@@ -11,7 +11,6 @@ function getMovies() {
 		}
 	}).then(result => {
 		//Populate into the DOM
-		console.log("getMovies " + JSON.stringify(result));
 		createMovieList(result);
 		return result;
 	}).catch(error => {
@@ -30,7 +29,6 @@ function getFavourites() {
 		}
 	}).then(result => {
 		//Populate into the DOM
-		console.log("getFavourites " + JSON.stringify(result));
 		createFavouriteList(result);
 		return result;
 	}).catch(error => {
@@ -41,7 +39,6 @@ function getFavourites() {
 
 //Post Movie API
 let postFavourites = function (favItem) {
-	console.log("favItem "+favItem);
 	return fetch("http://localhost:3000/favourites", {
 		method: 'POST',
 		body: JSON.stringify(favItem),
@@ -79,19 +76,24 @@ const createMovieList = (movieResponse) => {
 }
 
 const getMovieById = (id) =>{
+	var response = {};
+	console.log("movieItems "+JSON.stringify(movieItems));
+	console.log("favItems "+JSON.stringify(favItems));
+	console.log("getMovieById "+id);
 	movieItems.forEach(element=>{
-		if(element.id === id){
-		return element;
+		if(element.id == id){
+			console.log("element.id "+element.id);
+			console.log("id "+id);
+			response = element;
 		}
 	});
-	return null;
+	return response;
 }
 
 function addFavourites(id) {
-	console.log("addFavourites " + id);
 	if (!isMoviePresentInFavourites(id)) {
+		console.log("getMovieById(id) "+JSON.stringify(getMovieById(id)));
 		postFavourites(getMovieById(id)).then(result => {
-			console.log("updated successfully");
 			let childNode = document.getElementById("favouritesList");
 			childNode.innerHTML = '';
 			getFavourites();
@@ -102,7 +104,6 @@ function addFavourites(id) {
 }
 
 const isMoviePresentInFavourites = (id) => {
-	console.log(JSON.stringify("favItems" + favItems));
 	favItems.forEach(element => {
 		if (element.id === id) {
 			return true;
