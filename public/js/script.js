@@ -55,17 +55,9 @@ function getFavourites() {
 
 }
 
-function populateFavouriteMovieList(favItems) {
-	let childNode = document.getElementById("favouritesList");
-	childNode.innerHTML = '';
-	//Populate into DOM
-	createFavouriteList();
-}
-
-
 function addFavourite(id) {
-	if (!findDuplicate(id)) {
-		let movieObject = getMovieObject(id)
+	if (!isMoviePresentInFavItems(id)) {
+		let movieObject = getMovieById(id)
 		favItems.push(movieObject);
 		//Add Favourite call
 		return fetch("http://localhost:3000/favourites", {
@@ -94,7 +86,7 @@ function addFavourite(id) {
 
 }
 
-function findDuplicate(selectedMovieId) {
+function isMoviePresentInFavItems(selectedMovieId) {
 	for (let favmovie in favItems) {
 		if (selectedMovieId == favItems[favmovie].id) {
 			return true;
@@ -103,9 +95,9 @@ function findDuplicate(selectedMovieId) {
 	return false;
 }
 
-function getMovieObject(selectedMovieId) {
+function getMovieById(id) {
 	for (let movie in movieItems) {
-		if (selectedMovieId == movieItems[movie].id) {
+		if (id == movieItems[movie].id) {
 			return movieItems[movie];
 		}
 	}
