@@ -47,7 +47,7 @@ function getFavourites() {
 		}
 	}).then(result => {
 		favItems = result;
-		populateFavouriteMovieList(favItems);
+		createFavouriteList();
 		return result;
 	}).catch(error => {
 		throw new Error(error);
@@ -63,9 +63,9 @@ function populateFavouriteMovieList(favItems) {
 }
 
 
-function addFavourite(selectedId) {
-	if (!findDuplicate(selectedId)) {
-		let movieObject = getMovieObject(selectedId)
+function addFavourite(id) {
+	if (!findDuplicate(id)) {
+		let movieObject = getMovieObject(id)
 		favItems.push(movieObject);
 		//Add Favourite call
 		return fetch("http://localhost:3000/favourites", {
@@ -82,7 +82,7 @@ function addFavourite(selectedId) {
 				return Promise.reject("Movie is already added to favourites");
 			}
 		}).then((favMovieResult) => {
-			populateFavouriteMovieList(favMovieResult);
+			createFavouriteList();
 			return favMovieResult;
 		}).catch(err => {
 			throw new Error(err);
@@ -131,6 +131,8 @@ const createMovieList = () => {
 
 const createFavouriteList = () => {
 	let domFavouriteList = '';
+	let childNode = document.getElementById("favouritesList");
+	childNode.innerHTML = '';
 	favItems.forEach(element => {
 		domFavouriteList = domFavouriteList + `
 		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
@@ -140,7 +142,7 @@ const createFavouriteList = () => {
 		</div>
 		`;
 	});
-	document.getElementById("favouritesList").innerHTML = domFavouriteList;
+	childNode.innerHTML = domFavouriteList;
 }
 
 
