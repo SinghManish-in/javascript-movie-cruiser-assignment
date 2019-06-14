@@ -112,7 +112,7 @@ const createMovieList = () => {
 		<img src="${element.posterPath}" class="img-fluid pb-2" alt="Responsive image">
 		<p>Year: <span id="year">${element.releaseDate}</span></p>
 		<button
-		onclick="addFavourite(${element.id})" type="button" class="btn btn-dark">
+		onclick="addFavourite(${element.id})" type="button" class="btn btn-primary">
 		Add to Favourites
 		</button>
 		</div>
@@ -136,7 +136,6 @@ const createFavouriteList = () => {
 	});
 	childNode.innerHTML = domFavouriteList;
 }
-
 
 module.exports = {
 	getMovies,
