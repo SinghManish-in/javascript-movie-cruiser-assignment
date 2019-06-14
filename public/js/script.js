@@ -1,8 +1,7 @@
 let movieItems;
 let favItems;
-let selectedMovie;
 
-function getMovies() {
+const getMovies = () => {
 	return fetch("http://localhost:3000/movies").then((result) => {
 		if (result.status == 200) {
 			return Promise.resolve(result.json());
@@ -19,9 +18,8 @@ function getMovies() {
 	})
 }
 
-
 //Post Movie API
-let postMovie = function (myMovie) {
+const postMovie = (myMovie) => {
 	return fetch("http://localhost:3000/favourites", {
 		method: 'POST',
 		body: JSON.stringify(myMovie),
@@ -37,7 +35,6 @@ let postMovie = function (myMovie) {
 		}
 	})
 }
-
 
 //Get the Favourites Movie list
 function getFavourites() {
@@ -64,9 +61,7 @@ function populateFavouriteMovieList(favItems) {
 	//Populate into DOM
 	createFavouriteList();
 }
-function addFavouriteHandler(e) {
-	addFavourite(this.value)
-}
+
 
 function addFavourite(selectedId) {
 	if (!findDuplicate(selectedId)) {
