@@ -10,10 +10,10 @@ function getMovies() {
 			return Promise.reject("Unable to retrieve the movie list");
 		}
 	}).then(resultMovie => {
-		movieList = resultMovie;
+		movieItems = resultMovie;
 		//Populate into the DOM
 		createMovieList();
-		return movieList;
+		return movieItems;
 	}).catch(error => {
 		throw new Error(error);
 	})
@@ -109,16 +109,16 @@ function findDuplicate(selectedMovieId) {
 }
 
 function getMovieObject(selectedMovieId) {
-	for (let movie in movieList) {
-		if (selectedMovieId == movieList[movie].id) {
-			return movieList[movie];
+	for (let movie in movieItems) {
+		if (selectedMovieId == movieItems[movie].id) {
+			return movieItems[movie];
 		}
 	}
 }
 
 const createMovieList = () => {
 	let domMovieList = '';
-	movieList.forEach(element => {
+	movieItems.forEach(element => {
 		domMovieList = domMovieList + `
 		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
 		<h6>${element.title}</h6>
