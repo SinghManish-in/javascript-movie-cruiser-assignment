@@ -1,102 +1,124 @@
-
-let movieItems;
-let favItems;
+let movieList;
+let favMovieList;
+let selectedMovie;
 
 function getMovies() {
 	return fetch("http://localhost:3000/movies").then((result) => {
 		if (result.status == 200) {
 			return Promise.resolve(result.json());
 		} else {
-			return Promise.reject(null);
+			return Promise.reject("Unable to retrieve the movie list");
 		}
-	}).then(result => {
+	}).then(resultMovie => {
+		movieList = resultMovie;
 		//Populate into the DOM
-		createMovieList(result);
-		return result;
+		createMovieList();
+		return movieList;
 	}).catch(error => {
-		console.log(error);
-		return error;
+		throw new Error(error);
 	})
 }
 
-//Get the Favourites Movie list 
-function getFavourites() {
-	return fetch("http://localhost:3000/favourites").then((result) => {
-		if (result.status == 200) {
-			return Promise.resolve(result.json());
-		} else {
-			return Promise.reject(null);
-		}
-	}).then(result => {
-		favItems = result;
-		//Populate into the DOM
-		createFavouriteList();
-		return result;
-	}).catch(error => {
-		console.log(error);
-		return error;
-	})
-}
 
 //Post Movie API
-let postFavourites = function (favItem) {
+let postMovie = function (myMovie) {
 	return fetch("http://localhost:3000/favourites", {
 		method: 'POST',
-		body: JSON.stringify(favItem),
+		body: JSON.stringify(myMovie),
 		headers: {
 			'Content-Type': 'application/json',
 			'Accept': 'application/json'
 		}
 	}).then((result) => {
 		if (result.status == 201) {
-			favItems.push(favItem);
-			return Promise.resolve(result);
+			return Promise.resolve(favMovieList);
 		} else {
 			return Promise.reject("Movie is already added to favourites");
 		}
 	})
 }
 
-function addFavourite(id) {
-	if (!isMoviePresentInFavourites(id)) {
-		postFavourites(getMovieById(id)).then(result => {
-			document.getElementById("favouritesList").innerHTML = '';
-			createFavouriteList();
-		}).catch(error => {
-			console.log("error", error);
+
+//Get the Favourites Movie list
+function getFavourites() {
+	//API call
+	return fetch("http://localhost:3000/favourites").then((result) => {
+		if (result.status == 200) {
+			return Promise.resolve(result.json());
+		} else {
+			return Promise.reject("Error");
+		}
+	}).then(result => {
+		favMovieList = result;
+		populateFavouriteMovieList(favMovieList);
+		return result;
+	}).catch(error => {
+		throw new Error(error);
+	})
+
+}
+
+function populateFavouriteMovieList(favMovieList) {
+	let childNode = document.getElementById("favouritesList");
+	childNode.innerHTML = '';
+	//Populate into DOM
+	createFavouriteList();
+}
+function addFavouriteHandler(e) {
+	addFavourite(this.value)
+}
+
+function addFavourite(selectedId) {
+	if (!findDuplicate(selectedId)) {
+		let movieObject = getMovieObject(selectedId)
+		favMovieList.push(movieObject);
+		//Add Favourite call
+		return fetch("http://localhost:3000/favourites", {
+			method: 'POST',
+			body: JSON.stringify(movieObject),
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			}
+		}).then((result) => {
+			if (result.status == 200 || result.status == 201) {
+				return Promise.resolve(favMovieList);
+			} else {
+				return Promise.reject("Movie is already added to favourites");
+			}
+		}).then((favMovieResult) => {
+			populateFavouriteMovieList(favMovieResult);
+			return favMovieResult;
+		}).catch(err => {
+			throw new Error(err);
 		})
-	}
-	else {
+
+	} else {
 		throw new Error("Movie is already added to favourites");
 	}
+
 }
 
-const getMovieById = (id) => {
-	var response = {};
-	movieItems.forEach(element => {
-		if (element.id == id) {
-			response = element;
+function findDuplicate(selectedMovieId) {
+	for (let favmovie in favMovieList) {
+		if (selectedMovieId == favMovieList[favmovie].id) {
+			return true;
 		}
-	});
-	return response;
+	}
+	return false;
 }
 
-
-
-const isMoviePresentInFavourites = (id) => {
-	let isMoviePresent = false;
-	favItems.forEach(element => {
-		if (element.id == id) {
-			isMoviePresent = true;
+function getMovieObject(selectedMovieId) {
+	for (let movie in movieList) {
+		if (selectedMovieId == movieList[movie].id) {
+			return movieList[movie];
 		}
-	})
-	return isMoviePresent;
+	}
 }
 
-const createMovieList = (movieResponse) => {
-	movieItems = movieResponse;
+const createMovieList = () => {
 	let domMovieList = '';
-	movieResponse.forEach(element => {
+	movieList.forEach(element => {
 		domMovieList = domMovieList + `
 		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
 		<h6>${element.title}</h6>
@@ -114,7 +136,7 @@ const createMovieList = (movieResponse) => {
 
 const createFavouriteList = () => {
 	let domFavouriteList = '';
-	favItems.forEach(element => {
+	favMovieList.forEach(element => {
 		domFavouriteList = domFavouriteList + `
 		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
 		<h6>${element.title}</h6>
@@ -132,5 +154,6 @@ module.exports = {
 	getFavourites,
 	addFavourite
 };
+
 
 

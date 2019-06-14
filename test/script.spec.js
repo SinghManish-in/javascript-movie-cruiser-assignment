@@ -195,6 +195,7 @@ describe('Movie Cruiser', () => {
 				expect(lastCallArgs[1].method).to.equal('POST');
 				expect(lastCallArgs[1].body).to.equal(JSON.stringify(moviesTestData[0]));
 				favouritesTestData.push(moviesTestData[0]);
+				
 				expect(res).to.deep.equal(favouritesTestData);
 				expect(document.getElementById('favouritesList').innerHTML)
 				.to.include('The Unique Lama');
