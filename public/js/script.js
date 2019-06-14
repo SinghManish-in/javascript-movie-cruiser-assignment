@@ -1,5 +1,5 @@
-let movieList;
-let favMovieList;
+let movieItems;
+let favItems;
 let selectedMovie;
 
 function getMovies() {
@@ -31,7 +31,7 @@ let postMovie = function (myMovie) {
 		}
 	}).then((result) => {
 		if (result.status == 201) {
-			return Promise.resolve(favMovieList);
+			return Promise.resolve(favItems);
 		} else {
 			return Promise.reject("Movie is already added to favourites");
 		}
@@ -49,8 +49,8 @@ function getFavourites() {
 			return Promise.reject("Error");
 		}
 	}).then(result => {
-		favMovieList = result;
-		populateFavouriteMovieList(favMovieList);
+		favItems = result;
+		populateFavouriteMovieList(favItems);
 		return result;
 	}).catch(error => {
 		throw new Error(error);
@@ -58,7 +58,7 @@ function getFavourites() {
 
 }
 
-function populateFavouriteMovieList(favMovieList) {
+function populateFavouriteMovieList(favItems) {
 	let childNode = document.getElementById("favouritesList");
 	childNode.innerHTML = '';
 	//Populate into DOM
@@ -71,7 +71,7 @@ function addFavouriteHandler(e) {
 function addFavourite(selectedId) {
 	if (!findDuplicate(selectedId)) {
 		let movieObject = getMovieObject(selectedId)
-		favMovieList.push(movieObject);
+		favItems.push(movieObject);
 		//Add Favourite call
 		return fetch("http://localhost:3000/favourites", {
 			method: 'POST',
@@ -82,7 +82,7 @@ function addFavourite(selectedId) {
 			}
 		}).then((result) => {
 			if (result.status == 200 || result.status == 201) {
-				return Promise.resolve(favMovieList);
+				return Promise.resolve(favItems);
 			} else {
 				return Promise.reject("Movie is already added to favourites");
 			}
@@ -100,8 +100,8 @@ function addFavourite(selectedId) {
 }
 
 function findDuplicate(selectedMovieId) {
-	for (let favmovie in favMovieList) {
-		if (selectedMovieId == favMovieList[favmovie].id) {
+	for (let favmovie in favItems) {
+		if (selectedMovieId == favItems[favmovie].id) {
 			return true;
 		}
 	}
@@ -136,7 +136,7 @@ const createMovieList = () => {
 
 const createFavouriteList = () => {
 	let domFavouriteList = '';
-	favMovieList.forEach(element => {
+	favItems.forEach(element => {
 		domFavouriteList = domFavouriteList + `
 		<div id="${element.id}" class="list-group-item d-flex flex-column align-items-center">
 		<h6>${element.title}</h6>
